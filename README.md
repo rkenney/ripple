@@ -36,5 +36,6 @@ $.fn.rippleEffect.defaults = {
         //all i had to do was give any of the children of the appended element a z-index of 1, some i had to set position to relative.
         appendInkTo: "" //append ink to a diffrent element. will find closest element matching. i.e. .panel-body and ink will be aplied to  the panel-body parent elment of the selector.
     };
-    ```
+```
+
   
