@@ -4,6 +4,9 @@ A Jquery Material Design Style Ripple Effect
 
 This plugin will apply the material desgin style ripple to an element, there is no configuration needed, just add data-ripple="" to a link or button etc. and the script will detect the background color of the button and lighten or darken (if the color is to light to lighten) the color and show the ripple when clicked. If the button is transparent the script searches the elments parents for a background color to use, if nothing is found the inkDefaultColor from  options  will be used.
 The script is setup so that you can swap out functions with your own and such..
+
+I started this script based off of an example i found that was on sitepoint.
+
 ## Requirements
 * [jQuery](http://jquery.com/) 1.11.2+
 
