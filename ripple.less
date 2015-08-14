@@ -1,0 +1,65 @@
+//mixins
+.scale(@ratio) {
+  -webkit-transform: scale(@ratio);
+  -moz-transform: scale(@ratio);
+      -ms-transform: scale(@ratio); // IE9 only
+       -o-transform: scale(@ratio);
+          transform: scale(@ratio);
+}
+
+.opacity(@opacity) {
+  opacity: @opacity;
+  // IE8 filter
+  @opacity-ie: (@opacity * 100);
+  filter: ~"alpha(opacity=@{opacity-ie})";
+}
+
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
+/*ripple js styles
+------------------------*/
+[data-ripple] {
+    position: relative;
+}
+
+[data-ripple] > .ripple {
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+[data-ripple] > .ripple > .ink {
+	display: block; 
+    position: absolute;
+	background: #fefefe;
+	.border-radius(100%);
+	.scale(0);
+    .opacity(.75);
+
+    &.animate{
+        .animation(ripple 0.85s linear);
+    }
+}
+
+@-webkit-keyframes ripple {
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(2.5);
+            transform: scale(2.5);
+  }
+}
+/*scale the element to 250% to safely cover the entire link and fade it out*/
+@keyframes ripple {
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(2.5);
+            transform: scale(2.5);
+  }
+}
