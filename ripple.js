@@ -65,13 +65,10 @@ Add the Material Design Style Ripple Effect on Click / Touch.
 
                     if (typeof ($thisElement.data("ripple")) != "undefined" && $thisElement.data("ripple") != "") {
                         rippleColor = $thisElement.data("ripple");
-                        console.log("from data");
                     } else {
                         if (opts.inkColor != "") {
-                            console.log("from opts.");
                             rippleColor = opts.inkColor;
                         } else {
-                            console.log("from getInk.");
                             //try and get from elemnt or parent what ever has a bg color and it will lighten or dark based on color.
                             rippleColor = getInkColor($inkparent, opts.inkDefaultColor);
                         }
@@ -82,8 +79,16 @@ Add the Material Design Style Ripple Effect on Click / Touch.
                 }
 
                 //now that the ink is taken care of we need to set the position where it starts, which if from click.
-                //get event type.                 
-                eventType === "click" ? (eventPageX = e.pageX, eventPageY = e.pageY) : "touchstart" === eventType && (eventPageX = e.changedTouches[0].pageX, eventPageY = e.changedTouches[0].pageY);
+                //get event type.
+                if(eventType === "click"){
+                    eventPageX = e.pageX; 
+                    eventPageY = e.pageY;
+                } else if(eventType === "touchstart") {
+                    var touch = (e.originalEvent.touches[0] || e.originalEvent.changedTouches[0]);
+                    eventPageX = touch.pageX;
+                    eventPageY = touch.pageY
+                }
+               
                 inkX = eventPageX - $inkparent.offset().left - $inkSpan.width() / 2;
                 inkY = eventPageY - $inkparent.offset().top - $inkSpan.height() / 2;
                 $inkSpan.css({ top: inkY + 'px', left: inkX + 'px' }).addClass("animate");
