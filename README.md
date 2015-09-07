@@ -26,6 +26,12 @@ you can specify a color you want to use as the ripple by putting a color in the 
 ```
 By adding the color the script will now show the ripple as black instead of detecting the links bg color and lighting/darkening it.
 
+you can specify a target elment that has a bg-color you want to use as the ripple by setting the data-ripple attr to "" and adding the data attr of data-ripple-getcolorfromid="#somid" like so:
+```html
+<a class="btn btn-success" data-ripple="" data-ripple-getcolorfromid="#elmentThatHasBgcolorToUse">Some Link</a>
+```
+By adding the ripple-getcolorfromid the script will now show the ripple as the color of that taget elment of #elmentThatHasBgcolorToUse instead of detecting the links bg color and lighting/darkening it.
+
 ## Default Options 
 ```js
 $.fn.rippleEffect.defaults = {
