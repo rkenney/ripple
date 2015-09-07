@@ -22,7 +22,7 @@ Add the Material Design Style Ripple Effect on Click / Touch.
 
         return this.each(function () {
 
-            $(this).on("click touchstart", function (e) {
+            $(this).on("click", function (e) {
                 var $thisElement = $(this),
                 eventPageX,
                 eventPageY,
@@ -36,14 +36,21 @@ Add the Material Design Style Ripple Effect on Click / Touch.
 
                 //default append
                 $inkparent = $thisElement;
+
+                function getRippleColorFromTraverse() {
+                    if (opts.inkColor != "") {
+                        return opts.inkColor;
+                    } else {
+                        //try and get from elemnt or parent what ever has a bg color and it will lighten or dark based on color.
+                        return getInkColor($inkparent, opts.inkDefaultColor);
+                    }
+                }
                 //check to see if were appending ink to a parent element other than the trigger
                 //if you append to a parent item that item will have the ripple span and it may block access to links
                 //all i had to do was give any of the siblings of the ripple a z-index of 1, some i had to set position to relative.
                 if (opts.appendInkTo != "") {
                     $inkparent = $thisElement.closest(opts.appendInkTo);
                 }
-
-
                 // check to se if we have an ink, if not we need to add it in, we only need to do this once.
                 if ($inkparent.find("." + opts.inkClass).length == 0) {
                     //add ink 
@@ -51,8 +58,6 @@ Add the Material Design Style Ripple Effect on Click / Touch.
                 }
                 //set the ink var targeting the ink within the element to prevent dup ink animates.
                 $inkSpan = $inkparent.find("." + opts.inkContainerClass + " > " + " ." + opts.inkClass);
-
-
                 //incase of quick double click or animate is present. remove the animation
                 $inkSpan.removeClass("animate");
 
@@ -62,22 +67,29 @@ Add the Material Design Style Ripple Effect on Click / Touch.
                     maxDiameter = Math.max($inkparent.outerWidth(), $inkparent.outerHeight());
                     //set width and height and get bg color for the
                     //see if ripple color was provided via data attr.
-
                     if (typeof ($thisElement.data("ripple")) != "undefined" && $thisElement.data("ripple") != "") {
                         rippleColor = $thisElement.data("ripple");
                     } else {
-                        if (opts.inkColor != "") {
-                            rippleColor = opts.inkColor;
+                        //check if a target element id to get a ripple color from is provided
+                        if (typeof ($thisElement.data("ripple-getcolorfromid")) != "undefined" && $thisElement.data("ripple-getcolorfromid") != "") {
+                            var idToUse = $thisElement.data("ripple-getcolorfromid");
+                            //make sure element is on page.
+                            if ($(idToUse).length > 0) {
+                                //set from given elmements bgcolor.
+                                rippleColor = $(idToUse).css("background-color");
+                            } else {
+                                //get from default ways
+                                rippleColor = getRippleColorFromTraverse();
+                            }
                         } else {
-                            //try and get from elemnt or parent what ever has a bg color and it will lighten or dark based on color.
-                            rippleColor = getInkColor($inkparent, opts.inkDefaultColor);
+                            //get from default ways
+                            rippleColor = getRippleColorFromTraverse();
                         }
                     }
-
                     //set h and w and ripple color.
                     $inkSpan.css({ height: maxDiameter, width: maxDiameter, "background-color": rippleColor });
                 }
-
+                
                 //now that the ink is taken care of we need to set the position where it starts, which if from click.
                 //get event type.
                 if(eventType === "click"){
@@ -89,8 +101,8 @@ Add the Material Design Style Ripple Effect on Click / Touch.
                     eventPageY = touch.pageY
                 }
                
-                inkX = eventPageX - $inkparent.offset().left - $inkSpan.width() / 2;
-                inkY = eventPageY - $inkparent.offset().top - $inkSpan.height() / 2;
+                inkX = (eventPageX - $inkparent.offset().left - $inkSpan.width() / 2);
+                inkY = (eventPageY - $inkparent.offset().top - $inkSpan.height() / 2);
                 $inkSpan.css({ top: inkY + 'px', left: inkX + 'px' }).addClass("animate");
                 //remove animation after a little bit.
                 setTimeout(function () {
@@ -104,7 +116,8 @@ Add the Material Design Style Ripple Effect on Click / Touch.
     $.fn.rippleEffect.defaults = {
         inkContainerClass: "ripple",
         inkClass: "ink",
-        //to avaoid a global default you can add data-ripple="#ff00ff" to the element that will have the ripple and that color will be used.
+        //to avoid a global default you can add data-ripple="#ff00ff" to the element that will have the ripple and that color will be used.
+        //or to use a tagrget elements background color for the ripple you can set the data-ripple="" and data-ripple-getcolorfromid="#elmentWIthBGColorToUSe"
         inkDefaultColor: "#F0F0F0", //falback color to use if using parent traversing to get a bg color.
         inkColor: "", //the ink color you want the element to use, this will override any bg checks for element and parent traversing, but if the ement has data-ripple="#fff" the #fff will be used above all else
         //if you append to a parent item that item will have the ripple span and it may block access to links and child elements
@@ -188,12 +201,11 @@ Add the Material Design Style Ripple Effect on Click / Touch.
     //this is the base function that does all of the magic, it gets a bkg color, 
     //then changes the colors lumanince so the ink is visiable when being animated.
     function getInkColor($element, fallBackColor) {
-        // var $elem = $(this);
         var backgroundOrInhreitedBackGround,
             hex,
             luma,
             returnLumintion;
-        //get back ground color of element / or parent with an actual color or use falback of a lighter gray 
+        //get back ground color of element / or parent with an actual color or use fallback of a lighter gray 
         // Call our getBackgroundColorForInk function.
 
         backgroundOrInhreitedBackGround = getBackgroundColorForInk($element, fallBackColor);
